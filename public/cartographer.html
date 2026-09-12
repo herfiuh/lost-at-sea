@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Cartographer Log & Navigation Map</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'JetBrains Mono', monospace; background: #020617; color: #38bdf8; padding: 20px; margin: 0; }
+    h1 { font-family: 'Cinzel', serif; color: #f8fafc; border-bottom: 2px solid #38bdf8; padding-bottom: 8px; margin-top: 0; display: flex; justify-content: space-between; align-items: center; font-size: 1.4rem; }
+    .layout-grid { display: grid; grid-template-columns: 340px 1fr; gap: 16px; margin-top: 16px; }
+    .controls { background: #0f172a; padding: 12px; border-radius: 10px; border: 1px solid #1e293b; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    button { background: #0369a1; color: white; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; font-family: inherit; font-weight: 600; font-size: 0.8rem; }
+    button.victory { background: #059669; }
+    button.sim { background: #d97706; }
+    button.danger { background: #991b1b; }
+    .shift-container { display: flex; flex-direction: column; gap: 12px; }
+    .shift-box { background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 12px; }
+    .active-shift { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.2); }
+    .team-entry { margin: 6px 0; padding: 8px; background: #1e293b; border-radius: 6px; font-size: 0.78rem; line-height: 1.3; border-left: 3px solid #334155; }
+    .stemup-tag { font-size: 0.75rem; color: #f59e0b; background: rgba(245, 158, 11, 0.1); padding: 4px 10px; border-radius: 12px; border: 1px solid #f59e0b; }
+    .map-card { background: #070d18; border: 2px solid #1e293b; border-radius: 12px; padding: 16px; position: relative; display: flex; flex-direction: column; align-items: center; }
+    .map-title { font-family: 'Cinzel', serif; color: #f59e0b; font-size: 1.1rem; margin: 0 0 10px 0; text-align: center; width: 100%; display: flex; justify-content: space-between; }
+    svg.chart { width: 100%; max-width: 600px; height: auto; background: #030a16; border: 1px solid #1e293b; border-radius: 8px; }
+    .grid-line { stroke: #0f2744; stroke-width: 1; stroke-dasharray: 4,4; }
+    .landmass { fill: #0d1b2a; stroke: #1e3a5f; stroke-width: 2; }
+    .waypoint { fill: #f59e0b; stroke: #fff; stroke-width: 1.5; }
+    .waypoint-label { fill: #94a3b8; font-size: 10px; font-weight: bold; }
+    .target-label { fill: #34d399; font-size: 11px; font-weight: bold; }
+    .track-line { stroke: #38bdf8; stroke-width: 3; stroke-dasharray: 6,6; fill: none; transition: all 1.2s ease; }
+    .track-offcourse { stroke: #ef4444; stroke-width: 3; stroke-dasharray: 4,4; fill: none; transition: all 1.2s ease; }
+    .ship-icon { fill: #ef4444; stroke: #ffffff; stroke-width: 1.5; transition: all 1.2s ease-in-out; }
+    .reef-hazard { fill: #dc2626; opacity: 0.3; stroke: #ef4444; stroke-dasharray: 2,2; }
+  </style>
+</head>
+<body>
+
+  <h1>
+    <span>Cartographer Log & Dynamic Gulf Navigation</span>
+    <span class="stemup-tag">DEVELOPED BY STEM UP</span>
+  </h1>
+
+  <div class="controls">
+    <span style="color: #94a3b8; font-weight: bold; font-size: 0.85rem;">Manual Override:</span>
+    <button onclick="setShift(1)">Shift 1</button>
+    <button onclick="setShift(2)">Shift 2</button>
+    <button onclick="setShift(3)">Shift 3</button>
+    <button class="victory" onclick="setShift('ended')">🏁 Finalize Journey</button>
+    
+    <div style="margin-left: auto; display: flex; gap: 8px;">
+      <button class="sim" onclick="simulateResponses(true)">⚡ Simulate PERFECT Choices</button>
+      <button class="sim" style="background:#991b1b;" onclick="simulateResponses(false)">⚠️ Simulate ERRORS</button>
+      <button class="danger" onclick="resetGame()">Reset</button>
+    </div>
+  </div>
+
+  <div class="layout-grid">
+    <div class="shift-container">
+      <div class="shift-box" id="box-1">
+        <h2 style="color: #f59e0b; font-size: 0.95rem; margin: 0 0 6px 0;">Shift 1 (Kharg Island Departure)</h2>
+        <div id="s1-C" class="team-entry">Celestial: Pending...</div>
+        <div id="s1-E" class="team-entry">Environmental: Pending...</div>
+        <div id="s1-T" class="team-entry">Traditional: Pending...</div>
+        <div id="s1-D" class="team-entry">Digital: Pending...</div>
+      </div>
+
+      <div class="shift-box" id="box-2">
+        <h2 style="color: #f59e0b; font-size: 0.95rem; margin: 0 0 6px 0;">Shift 2 (Mid-Gulf Transit)</h2>
+        <div id="s2-C" class="team-entry">Celestial: Pending...</div>
+        <div id="s2-E" class="team-entry">Environmental: Pending...</div>
+        <div id="s2-T" class="team-entry">Traditional: Pending...</div>
+        <div id="s2-D" class="team-entry">Digital: Pending...</div>
+      </div>
+
+      <div class="shift-box" id="box-3">
+        <h2 style="color: #f59e0b; font-size: 0.95rem; margin: 0 0 6px 0;">Shift 3 (Qatari Coastal Approach)</h2>
+        <div id="s3-C" class="team-entry">Celestial: Pending...</div>
+        <div id="s3-E" class="team-entry">Environmental: Pending...</div>
+        <div id="s3-T" class="team-entry">Traditional: Pending...</div>
+        <div id="s3-D" class="team-entry">Digital: Pending...</div>
+      </div>
+    </div>
+
+    <div class="map-card">
+      <div class="map-title">
+        <span>Trans-Gulf Voyage Chart</span>
+        <span id="map-status" style="color: #38bdf8; font-size: 0.85rem;">Status: At Anchor (Kharg Island)</span>
+      </div>
+
+      <svg class="chart" viewBox="0 0 500 650" id="nav-chart">
+        <line x1="100" y1="0" x2="100" y2="650" class="grid-line" />
+        <line x1="200" y1="0" x2="200" y2="650" class="grid-line" />
+        <line x1="300" y1="0" x2="300" y2="650" class="grid-line" />
+        <line x1="400" y1="0" x2="400" y2="650" class="grid-line" />
+        <line x1="0" y1="100" x2="500" y2="100" class="grid-line" />
+        <line x1="0" y1="250" x2="500" y2="250" class="grid-line" />
+        <line x1="0" y1="400" x2="500" y2="400" class="grid-line" />
+        <line x1="0" y1="550" x2="500" y2="550" class="grid-line" />
+
+        <path d="M 120,0 Q 250,50 380,120 Q 480,200 500,320 L 500,0 Z" class="landmass" />
+        <path d="M 0,180 Q 80,220 70,350 Q 60,420 180,440 L 220,580 L 150,600 Q 100,650 0,650 Z" class="landmass" />
+
+        <circle cx="280" cy="70" r="10" fill="#1e3a5f" stroke="#f59e0b" stroke-width="2" />
+        <text x="300" y="74" fill="#f59e0b" font-size="11" font-weight="bold">🏝️ Kharg Island (29.2° N)</text>
+
+        <ellipse cx="230" cy="510" rx="35" ry="20" class="reef-hazard" />
+        <text x="230" y="514" fill="#ef4444" font-size="9" text-anchor="middle" font-weight="bold">Fasht Reef Hazard</text>
+
+        <!-- ALTERNATE OFF-COURSE END LOCATIONS -->
+        <circle cx="380" cy="460" r="6" fill="#ef4444" />
+        <text x="390" y="464" class="waypoint-label" fill="#ef4444">📍 Halul Island (Stranded)</text>
+
+        <!-- IDEAL PORT DESTINATION -->
+        <circle cx="205" cy="560" r="8" fill="#34d399" stroke="#fff" stroke-width="2" />
+        <text x="220" y="564" class="target-label">⚓ DESTINATION: Al Wakrah Port (25.17° N)</text>
+
+        <path id="ship-track" d="M 280,70" class="track-line" />
+
+        <g id="ship-vessel" transform="translate(280, 70)">
+          <polygon points="0,-12 8,10 -8,10" class="ship-icon" />
+          <circle cx="0" cy="2" r="3" fill="#fff" />
+        </g>
+      </svg>
+    </div>
+  </div>
+
+<script>
+  const socket = io();
+  let currentShift = 1;
+
+  function setShift(val) { socket.emit('setShift', val); }
+  function resetGame() { if (confirm("Reset simulation?")) socket.emit('resetGame'); }
+
+  function simulateResponses(isCorrect) {
+    if (currentShift === 'ended') return;
+    const choices = {
+      1: isCorrect ? "1. Shadow points North-East ➔ Keep shadow over left shoulder to steer South" : "2. Shadow points South-West ➔ Course is North",
+      2: isCorrect ? "1. Drifted too far North (target 25° N); adjust course South" : "3. Water is deep and safe (>15m); maintain cruise speed",
+      3: isCorrect ? "1. Align bow toward Suhail to hold True South (180°)" : "2. False alarm; maintain speed"
+    };
+
+    ['C', 'E', 'T', 'D'].forEach(t => {
+      socket.emit('submitDecision', { shift: currentShift, team: t, name: `${t} Lead`, choice: choices[currentShift] });
+    });
+  }
+
+  function calculateTrajectory(state) {
+    let points = [{ x: 280, y: 70 }];
+    let statusMsg = "Status: Departure from Kharg Island (29.2° N)";
+    let isOffCourse = false;
+
+    // Shift 1 Position
+    if (state.shiftScores[1] !== null) {
+      const score1 = state.shiftScores[1];
+      const x1 = 250 + (4 - score1) * 20; // Drifts East if wrong
+      points.push({ x: x1, y: 230 });
+      if (score1 < 4) isOffCourse = true;
+      statusMsg = `Shift 1 Complete: Score ${score1}/4 (${isOffCourse ? 'Drifting East' : 'On Fairway'})`;
+    }
+
+    // Shift 2 Position
+    if (state.shiftScores[2] !== null) {
+      const score2 = state.shiftScores[2];
+      const prevX = points[1].x;
+      const x2 = prevX - 10 + (4 - score2) * 25;
+      points.push({ x: x2, y: 390 });
+      if (score2 < 4) isOffCourse = true;
+      statusMsg = `Shift 2 Complete: Score ${score2}/4 (${isOffCourse ? 'Off-Course Drift' : 'Approaching Qatar'})`;
+    }
+
+    // Shift 3 / Finale Position
+    if (state.currentShift === 'ended') {
+      if (state.finalOutcome === 'success') {
+        points.push({ x: 205, y: 560 });
+        statusMsg = "🎉 SAFE ARRIVAL: Successfully Docked at Al Wakrah Port!";
+      } else if (state.finalOutcome === 'drifted') {
+        points.push({ x: 380, y: 460 });
+        statusMsg = "⚠️ STRANDED: Missed Qatar, drifted east into open sea near Halul Island!";
+      } else {
+        points.push({ x: 230, y: 510 });
+        statusMsg = "🚨 GROUNDED: Hull damaged on shallow Fasht Coral Reefs!";
+      }
+    }
+
+    return { points, statusMsg, isOffCourse };
+  }
+
+  function updateMapUI(state) {
+    const { points, statusMsg, isOffCourse } = calculateTrajectory(state);
+    const vessel = document.getElementById('ship-vessel');
+    const track = document.getElementById('ship-track');
+    const statusText = document.getElementById('map-status');
+
+    let pathD = `M ${points[0].x},${points[0].y}`;
+    for (let i = 1; i < points.length; i++) {
+      pathD += ` L ${points[i].x},${points[i].y}`;
+    }
+
+    track.setAttribute('d', pathD);
+    if (isOffCourse || state.finalOutcome === 'grounded' || state.finalOutcome === 'drifted') {
+      track.setAttribute('class', 'track-offcourse');
+    } else {
+      track.setAttribute('class', 'track-line');
+    }
+
+    const lastPt = points[points.length - 1];
+    vessel.setAttribute('transform', `translate(${lastPt.x}, ${lastPt.y})`);
+    statusText.innerText = statusMsg;
+  }
+
+  socket.on('stateUpdate', (state) => {
+    currentShift = state.currentShift;
+
+    [1, 2, 3].forEach(s => {
+      const box = document.getElementById(`box-${s}`);
+      if (s === state.currentShift) box.classList.add('active-shift');
+      else box.classList.remove('active-shift');
+    });
+
+    for (let s = 1; s <= 3; s++) {
+      ['C', 'E', 'T', 'D'].forEach(t => {
+        const entry = state.submissions[s][t];
+        const el = document.getElementById(`s${s}-${t}`);
+        if (entry) {
+          const isRight = entry.choice.startsWith('1.');
+          el.innerHTML = `<strong style="color: #38bdf8;">${t} (${entry.name}):</strong><br><span style="color: ${isRight ? '#34d399' : '#ef4444'};">${entry.choice}</span>`;
+          el.style.borderLeftColor = isRight ? '#34d399' : '#ef4444';
+        } else {
+          el.innerText = `Team ${t}: Pending...`;
+          el.style.color = '#94a3b8';
+          el.style.borderLeftColor = '#334155';
+        }
+      });
+    }
+
+    updateMapUI(state);
+  });
+</script>
+</body>
+</html>

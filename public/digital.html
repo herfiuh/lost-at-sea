@@ -1,0 +1,1266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Digital Division — Team Lead Guide</title>
+
+<style>
+@page {
+    size: A4;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #dfe5e8;
+    color: #17252d;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.print-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #142f46;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+.print-button {
+    border: 0;
+    background: #53c7d9;
+    color: #142f46;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 10px 22px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.page {
+    width: 210mm;
+    height: 297mm;
+    margin: 18px auto;
+    padding: 12mm 14mm 14mm;
+    background: #f9fcfd;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,.18);
+    page-break-after: always;
+}
+
+.page:last-child {
+    page-break-after: auto;
+}
+
+:root {
+    --navy:#142f46;
+    --blue:#277ca3;
+    --cyan:#53c7d9;
+    --ice:#e6f5f8;
+    --gold:#e8b84a;
+    --sand:#f5ead3;
+    --coral:#d9684b;
+    --green:#398568;
+    --ink:#17252d;
+    --muted:#60717a;
+}
+
+h1,h2,h3,p {
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 28px;
+    line-height: 1;
+    color: var(--navy);
+    margin-bottom: 6px;
+}
+
+h2 {
+    font-size: 19px;
+    color: var(--navy);
+    margin-bottom: 6px;
+}
+
+h3 {
+    font-size: 13px;
+    color: var(--navy);
+    margin-bottom: 4px;
+}
+
+p {
+    font-size: 11px;
+    line-height: 1.35;
+    margin-bottom: 6px;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 1.7px;
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--blue);
+    margin-bottom: 4px;
+}
+
+.big-idea {
+    font-size: 15px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: var(--navy);
+}
+
+.header {
+    border-bottom: 3px solid var(--cyan);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.badge {
+    background: var(--navy);
+    color: white;
+    padding: 7px 10px;
+    border-radius: 5px;
+    font-weight: 800;
+    font-size: 10px;
+    text-align: center;
+}
+
+.card {
+    border-radius: 8px;
+    padding: 9px;
+    margin-bottom: 7px;
+    background: white;
+    border: 1px solid #d5e0e5;
+}
+
+.blue-card {
+    background: var(--ice);
+    border-color: #b9e1e8;
+}
+
+.gold-card {
+    background: #fff4d8;
+    border-color: #efd18a;
+}
+
+.dark-card {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+}
+
+.dark-card h2,
+.dark-card h3 {
+    color: white;
+}
+
+.dark-card p {
+    color: #eef5f7;
+}
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+}
+
+.three-col {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 6px;
+}
+
+.flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin: 7px 0;
+}
+
+.flow-box {
+    background: var(--navy);
+    color: white;
+    padding: 7px 9px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.arrow {
+    color: var(--cyan);
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.rule {
+    border-left: 4px solid var(--cyan);
+    background: #edf9fb;
+    padding: 7px 9px;
+    margin: 6px 0;
+    border-radius: 0 5px 5px 0;
+    font-size: 10.5px;
+    line-height: 1.3;
+}
+
+.rule strong {
+    color: var(--navy);
+}
+
+.answer {
+    color: var(--green);
+    font-weight: 900;
+}
+
+.script {
+    background: #f1f5f6;
+    border-left: 3px solid var(--blue);
+    padding: 6px 8px;
+    border-radius: 0 5px 5px 0;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.hint {
+    display: grid;
+    grid-template-columns: 25px 1fr;
+    gap: 7px;
+    align-items: start;
+    margin-bottom: 5px;
+}
+
+.hint-number {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 10px;
+}
+
+.mission-rule {
+    text-align: center;
+    padding: 10px;
+    background: var(--navy);
+    color: white;
+    border-radius: 7px;
+    margin-bottom: 7px;
+}
+
+.mission-rule .title {
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--cyan);
+    font-weight: 900;
+}
+
+.mission-rule .main {
+    font-size: 15px;
+    font-weight: 900;
+    margin-top: 3px;
+}
+
+.crew-box {
+    border: 1px solid #d5dfe2;
+    border-radius: 6px;
+    padding: 7px;
+    background: white;
+}
+
+.crew-box strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--navy);
+    font-size: 10px;
+}
+
+.crew-box p {
+    margin: 0;
+    font-size: 9.5px;
+}
+
+.small {
+    font-size: 9px;
+    line-height: 1.25;
+    color: var(--muted);
+}
+
+.number-box {
+    background: var(--navy);
+    color: white;
+    border-radius: 7px;
+    padding: 9px;
+    text-align: center;
+}
+
+.number-box .number {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--cyan);
+}
+
+.number-box .label {
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.footer {
+    position: absolute;
+    bottom: 6mm;
+    left: 14mm;
+    right: 14mm;
+    border-top: 1px solid #d5dfe2;
+    padding-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    color: #718087;
+    font-size: 7.5px;
+}
+
+@media print {
+    body {
+        background: white;
+    }
+
+    .print-bar {
+        display: none;
+    }
+
+    .page {
+        margin: 0;
+        box-shadow: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="print-bar">
+    <button class="print-button" onclick="window.print()">
+        🖨️ Print / Save as PDF
+    </button>
+</div>
+
+
+<!-- =========================================================
+     PAGE 1 — WHY DIGITAL NAVIGATION MATTERS
+========================================================= -->
+
+<section class="page">
+
+<div class="header">
+
+    <div class="header-row">
+
+        <div>
+            <div class="eyebrow">Trans-Gulf Navigation Simulation</div>
+            <h1>📡 Digital Division</h1>
+            <p class="big-idea">Team Lead Expert Guide</p>
+        </div>
+
+        <div class="badge">
+            TECH &<br>
+            SONAR OFFICERS
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card blue-card">
+
+    <div class="eyebrow">Your mission</div>
+
+    <div class="big-idea">
+        Turn invisible information into numbers the crew can trust.
+    </div>
+
+    <p>
+        Your team operates the modern tools of navigation:
+        <strong>GPS</strong> tells us where we are, while
+        <strong>sonar</strong> tells us what is beneath us.
+    </p>
+
+</div>
+
+
+<div class="dark-card card">
+
+    <h2>📡 From guessing to measuring</h2>
+
+    <p style="font-size:12px;font-weight:700;">
+        Navigation technology doesn't replace the navigator.
+        It gives the navigator better evidence.
+    </p>
+
+    <div class="flow">
+
+        <div class="flow-box">🛰️ GPS</div>
+
+        <div class="arrow">+</div>
+
+        <div class="flow-box">🔊 SONAR</div>
+
+        <div class="arrow">=</div>
+
+        <div class="flow-box">🧭 DECISION</div>
+
+    </div>
+
+</div>
+
+
+<div class="two-col">
+
+    <div class="card">
+
+        <h2>Then</h2>
+
+        <p>
+            Mariners estimated position using stars, landmarks,
+            compass directions, charts and environmental clues.
+        </p>
+
+        <p style="margin-bottom:0;">
+            Every observation had to be interpreted by a human.
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Today</h2>
+
+        <p>
+            Satellites can calculate position while sonar can
+            measure the depth beneath a vessel.
+        </p>
+
+        <p style="margin-bottom:0;">
+            But numbers still need someone to
+            <strong>understand what they mean.</strong>
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="card gold-card">
+
+    <h2>💡 The survival question</h2>
+
+    <p class="big-idea">
+        “If I know my position and the water depth,
+        can I tell whether I'm making progress safely?”
+    </p>
+
+    <p style="text-align:center;font-weight:900;color:var(--navy);margin-bottom:0;">
+        Position tells you WHERE. Depth tells you WHAT'S BELOW.
+    </p>
+
+</div>
+
+
+<h2>Your two digital instruments</h2>
+
+<div class="two-col">
+
+    <div class="card blue-card" style="text-align:center;">
+
+        <div style="font-size:31px;">🛰️</div>
+
+        <h2>GPS</h2>
+
+        <p class="big-idea">POSITION</p>
+
+        <p style="margin-bottom:0;">
+            Latitude tells us how far north or south we are.
+        </p>
+
+    </div>
+
+
+    <div class="card gold-card" style="text-align:center;">
+
+        <div style="font-size:31px;">🔊</div>
+
+        <h2>SONAR</h2>
+
+        <p class="big-idea">DEPTH</p>
+
+        <p style="margin-bottom:0;">
+            Sound waves reveal how deep the water is below us.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+    <span>DIGITAL DIVISION</span>
+    <span>01 / 04</span>
+</div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PAGE 2 — CORE PRINCIPLES
+========================================================= -->
+
+<section class="page">
+
+<div class="header">
+
+    <div class="eyebrow">Digital Navigation</div>
+
+    <h1>🛰️ Position + 🔊 Depth</h1>
+
+    <p>
+        Two questions keep the vessel moving toward Al Wakrah safely.
+    </p>
+
+</div>
+
+
+<div class="card blue-card">
+
+    <h2>🛰️ 1. GPS Waypoint Tracking</h2>
+
+    <p class="big-idea">
+        Latitude tells us how far north or south we are.
+    </p>
+
+
+    <div class="three-col">
+
+        <div class="number-box">
+
+            <div class="number">29.20° N</div>
+
+            <div class="label">
+                DEPARTURE
+            </div>
+
+        </div>
+
+
+        <div class="number-box">
+
+            <div class="number">27.00° N</div>
+
+            <div class="label">
+                MID-GULF
+            </div>
+
+        </div>
+
+
+        <div class="number-box">
+
+            <div class="number">25.17° N</div>
+
+            <div class="label">
+                AL WAKRAH
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="rule">
+
+    <strong>STATION RULE:</strong><br>
+
+    GPS latitude above <strong>25.17° N</strong> →
+    continue on a <strong>SOUTH track.</strong>
+
+</div>
+
+
+<div class="card">
+
+    <h2>🧠 Why does the number fall?</h2>
+
+    <p>
+        Latitude is measured from the Equator.
+        Moving north makes the latitude number larger;
+        moving south makes it smaller.
+    </p>
+
+    <div class="flow">
+
+        <div class="flow-box">29.20° N</div>
+
+        <div class="arrow">→</div>
+
+        <div class="flow-box">27.00° N</div>
+
+        <div class="arrow">→</div>
+
+        <div class="flow-box">25.17° N</div>
+
+    </div>
+
+    <p style="text-align:center;font-weight:800;margin-bottom:0;">
+        Smaller latitude = farther SOUTH.
+    </p>
+
+</div>
+
+
+<div class="card gold-card">
+
+    <h2>🔊 2. Bathymetric Sonar Profile</h2>
+
+    <p class="big-idea">
+        Sonar uses sound to measure the water beneath the vessel.
+    </p>
+
+
+    <svg width="100%"
+         height="125"
+         viewBox="0 0 700 180"
+         xmlns="http://www.w3.org/2000/svg"
+         style="
+            background:#e6f5f8;
+            border:1px solid #b9e1e8;
+            border-radius:7px;">
+
+        <!-- water -->
+        <rect x="0" y="0" width="700" height="110"
+              fill="#d9f1f5"/>
+
+        <!-- sea floor -->
+        <path d="M0 130
+                 C150 128 210 132 300 130
+                 C370 128 400 90 445 92
+                 C500 94 520 118 560 125
+                 C610 133 650 132 700 130
+                 L700 180 L0 180 Z"
+              fill="#d0b57b"/>
+
+        <!-- sonar beam -->
+        <line x1="340" y1="20"
+              x2="445" y2="92"
+              stroke="#277ca3"
+              stroke-width="4"
+              stroke-dasharray="7 5"/>
+
+        <!-- safe depth -->
+        <text x="85" y="65"
+              font-family="Arial"
+              font-size="17"
+              font-weight="bold"
+              fill="#142f46">
+            SAFE: 12–20 m
+        </text>
+
+        <!-- shallow -->
+        <text x="470" y="62"
+              font-family="Arial"
+              font-size="17"
+              font-weight="bold"
+              fill="#d9684b">
+            SHOAL
+        </text>
+
+        <text x="470" y="82"
+              font-family="Arial"
+              font-size="15"
+              font-weight="bold"
+              fill="#d9684b">
+            3–4 m
+        </text>
+
+        <!-- vessel -->
+        <rect x="315" y="8"
+              width="50"
+              height="13"
+              rx="4"
+              fill="#142f46"/>
+
+    </svg>
+
+    <div class="caption">
+        A sudden decrease in depth means the bottom is rising toward the vessel.
+    </div>
+
+</div>
+
+
+<div class="rule">
+
+    <strong>STATION RULE:</strong><br>
+
+    Depth drops below <strong>5 m</strong> →
+    <strong>EMERGENCY TURN.</strong>
+
+</div>
+
+
+<div class="dark-card card">
+
+    <h2>🧠 The key distinction</h2>
+
+    <div class="two-col">
+
+        <div>
+            <h3>🛰️ GPS</h3>
+            <p style="margin-bottom:0;">
+                “Where are we?”
+            </p>
+        </div>
+
+        <div>
+            <h3>🔊 SONAR</h3>
+            <p style="margin-bottom:0;">
+                “What's underneath us?”
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+    <span>DIGITAL DIVISION</span>
+    <span>02 / 04</span>
+</div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PAGE 3 — BREAKOUT
+========================================================= -->
+
+<section class="page">
+
+<div class="header">
+
+    <div class="eyebrow">Breakout Room</div>
+
+    <h1>🎓 Become the Instrument Experts</h1>
+
+    <p>
+        Give students the numbers. Let them discover what the numbers mean.
+    </p>
+
+</div>
+
+
+<div class="dark-card card">
+
+    <h2>⏱ Suggested breakout: 15–20 minutes</h2>
+
+    <div class="three-col">
+
+        <div style="text-align:center;">
+            <div style="font-size:22px;">📟</div>
+            <h3 style="color:white;">READ</h3>
+            <p style="font-size:9px;margin:0;">What number do we have?</p>
+        </div>
+
+        <div style="text-align:center;">
+            <div style="font-size:22px;">🧠</div>
+            <h3 style="color:white;">INTERPRET</h3>
+            <p style="font-size:9px;margin:0;">What does it mean?</p>
+        </div>
+
+        <div style="text-align:center;">
+            <div style="font-size:22px;">🧭</div>
+            <h3 style="color:white;">ACT</h3>
+            <p style="font-size:9px;margin:0;">What should the helm do?</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<h2>🛰️ Challenge 1 — Are we getting closer?</h2>
+
+<div class="card blue-card">
+
+    <div class="three-col">
+
+        <div class="number-box">
+            <div class="number">29.20°</div>
+            <div class="label">START</div>
+        </div>
+
+        <div class="number-box">
+            <div class="number">27.00°</div>
+            <div class="label">NOW</div>
+        </div>
+
+        <div class="number-box">
+            <div class="number">25.17°</div>
+            <div class="label">TARGET</div>
+        </div>
+
+    </div>
+
+    <div class="script" style="margin-top:7px;">
+        “What is happening to the latitude number?”
+    </div>
+
+    <div class="script" style="margin-top:4px;">
+        “Does moving south make latitude larger or smaller?”
+    </div>
+
+    <div class="script" style="margin-top:4px;">
+        “Are we above or below the target latitude?”
+    </div>
+
+    <p class="small" style="margin:6px 0 0;">
+        <strong>Target discovery:</strong>
+        above 25.17° N → continue SOUTH.
+    </p>
+
+</div>
+
+
+<h2>🔊 Challenge 2 — Something is rising below us</h2>
+
+<div class="card gold-card">
+
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:8px;
+        font-size:15px;
+        font-weight:900;
+        margin-bottom:7px;">
+
+        <span>18 m</span>
+        <span>→</span>
+        <span>12 m</span>
+        <span>→</span>
+        <span style="color:var(--coral);">4 m ⚠️</span>
+
+    </div>
+
+    <div class="script">
+        “What is happening to the depth?”
+    </div>
+
+    <div class="script" style="margin-top:4px;">
+        “At what depth does our emergency rule activate?”
+    </div>
+
+    <div class="script" style="margin-top:4px;">
+        “Do we keep going or turn?”
+    </div>
+
+    <p class="small" style="margin:6px 0 0;">
+        <strong>Target discovery:</strong>
+        below 5 m → emergency turn.
+    </p>
+
+</div>
+
+
+<h2>🧠 Challenge 3 — Which instrument answers which question?</h2>
+
+<div class="two-col">
+
+    <div class="rule">
+
+        <strong>🛰️ GPS</strong>
+
+        <p style="margin:4px 0;">
+            “Where are we?”
+        </p>
+
+        <span class="answer">
+            → POSITION
+        </span>
+
+    </div>
+
+
+    <div class="rule">
+
+        <strong>🔊 SONAR</strong>
+
+        <p style="margin:4px 0;">
+            “What's beneath us?”
+        </p>
+
+        <span class="answer">
+            → DEPTH
+        </span>
+
+    </div>
+
+</div>
+
+
+<div class="card blue-card">
+
+    <h2>🤝 Connect with the other teams</h2>
+
+    <div class="two-col">
+
+        <div class="crew-box">
+
+            <strong>📡 + 🪸 TRADITIONAL</strong>
+
+            <p>
+                “You see a dark patch. Let's see if sonar confirms
+                shallow water.”
+            </p>
+
+        </div>
+
+
+        <div class="crew-box">
+
+            <strong>📡 + 🔭 CELESTIAL</strong>
+
+            <p>
+                “Our GPS says where we are.
+                Does your observation agree with our direction?”
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card gold-card">
+
+    <h2>✅ Ready for the mission?</h2>
+
+    <div class="two-col">
+
+        <ul style="
+            margin:0;
+            padding-left:18px;
+            font-size:10px;
+            line-height:1.45;">
+
+            <li>GPS tells position.</li>
+            <li>25.17° N is the target.</li>
+
+        </ul>
+
+        <ul style="
+            margin:0;
+            padding-left:18px;
+            font-size:10px;
+            line-height:1.45;">
+
+            <li>Sonar tells depth.</li>
+            <li>Below 5 m → turn.</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+    <span>DIGITAL DIVISION</span>
+    <span>03 / 04</span>
+</div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PAGE 4 — MISSION CARD
+========================================================= -->
+
+<section class="page">
+
+<div class="header">
+
+    <div class="eyebrow">Keep Beside the Console</div>
+
+    <h1>📡 Mission Card</h1>
+
+    <p>
+        Your numbers are the crew's most precise evidence.
+    </p>
+
+</div>
+
+
+<div class="mission-rule">
+
+    <div class="title">🛰️ GPS Waypoint</div>
+
+    <div class="main">
+        ABOVE 25.17° N → CONTINUE SOUTH
+    </div>
+
+</div>
+
+
+<div class="mission-rule">
+
+    <div class="title">🔊 Sonar Depth</div>
+
+    <div class="main">
+        BELOW 5 m → EMERGENCY TURN
+    </div>
+
+</div>
+
+
+<div class="card blue-card">
+
+    <h2>🔄 Every digital observation</h2>
+
+    <div class="flow">
+
+        <div class="flow-box">📟 READ</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">🧠 INTERPRET</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">⚠️ CHECK</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">🧭 ACT</div>
+
+    </div>
+
+</div>
+
+
+<h2>🆘 Hint ladder</h2>
+
+<div class="card">
+
+    <div class="hint">
+
+        <div class="hint-number">1</div>
+
+        <div>
+            <h3>READ</h3>
+
+            <div class="script">
+                “What number are you looking at?”
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="hint">
+
+        <div class="hint-number">2</div>
+
+        <div>
+            <h3>CLASSIFY</h3>
+
+            <div class="script">
+                “Is that number telling us position or depth?”
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="hint">
+
+        <div class="hint-number">3</div>
+
+        <div>
+            <h3>COMPARE</h3>
+
+            <div class="script">
+                “What important number should we compare it with?”
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="hint">
+
+        <div class="hint-number">4</div>
+
+        <div>
+            <h3>DECIDE</h3>
+
+            <div class="script">
+                “Has the number crossed our decision threshold?”
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="hint">
+
+        <div class="hint-number">!</div>
+
+        <div>
+            <h3>LAST RESORT</h3>
+
+            <div class="script">
+                “Look at the rule on your mission card. Which side of the threshold are we on?”
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<h2>🤝 Cross-team calls</h2>
+
+<div class="two-col">
+
+    <div class="crew-box">
+
+        <strong>🔭 CELESTIAL</strong>
+
+        <p>
+            “What direction does your observation suggest?”
+        </p>
+
+    </div>
+
+
+    <div class="crew-box">
+
+        <strong>🪸 TRADITIONAL</strong>
+
+        <p>
+            “You see a dark patch — what does our depth reading say?”
+        </p>
+
+    </div>
+
+
+    <div class="crew-box">
+
+        <strong>💨 ENVIRONMENTAL</strong>
+
+        <p>
+            “Does the wind or swell affect our planned correction?”
+        </p>
+
+    </div>
+
+
+    <div class="crew-box">
+
+        <strong>YOUR ROLE</strong>
+
+        <p>
+            Provide precise measurements.
+            The whole crew makes the final decision.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="dark-card card"
+     style="margin-top:8px;text-align:center;">
+
+    <div style="
+        font-size:10px;
+        color:var(--cyan);
+        font-weight:900;
+        letter-spacing:1px;">
+        📡 THE GOLDEN RULE
+    </div>
+
+    <div style="
+        font-size:18px;
+        font-weight:900;
+        margin:6px 0;">
+        A NUMBER IS ONLY USEFUL
+        IF YOU KNOW WHAT IT MEANS.
+    </div>
+
+    <div style="font-size:13px;">
+        Read it. Compare it. Then act.
+    </div>
+
+</div>
+
+
+<div class="card gold-card" style="text-align:center;">
+
+    <div style="
+        font-size:9px;
+        text-transform:uppercase;
+        letter-spacing:1px;
+        font-weight:900;">
+        Your job
+    </div>
+
+    <div style="
+        font-size:18px;
+        font-weight:900;
+        color:var(--navy);
+        margin:4px 0;">
+        🛰️ KNOW WHERE
+        &nbsp;→&nbsp;
+        🔊 KNOW BELOW
+        &nbsp;→&nbsp;
+        🧭 HELP THE CREW
+    </div>
+
+    <div style="font-size:10px;font-weight:800;">
+        Keep the vessel moving south — but never into dangerously shallow water.
+    </div>
+
+</div>
+
+
+<div class="footer">
+    <span>DIGITAL DIVISION • MISSION READY</span>
+    <span>04 / 04</span>
+</div>
+
+</section>
+
+</body>
+</html>

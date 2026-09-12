@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lost at Sea - Bridge Portal</title>
+  <script src="/socket.io/socket.io.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-dark: #070d18;
+      --card-bg: #0f172a;
+      --accent-gold: #f59e0b;
+      --accent-cyan: #38bdf8;
+      --accent-green: #34d399;
+      --text-light: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #1e293b;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      margin: 0;
+      padding: 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 850px;
+      display: grid;
+      grid-template-columns: 1fr 260px;
+      gap: 16px;
+    }
+
+    @media (max-width: 768px) { .container { grid-template-columns: 1fr; } }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+    }
+
+    .sidebar-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 12px;
+      margin-bottom: 20px;
+    }
+    .logo-img { max-height: 38px; width: auto; object-fit: contain; }
+    .stemup-badge {
+      background: rgba(245, 158, 11, 0.15);
+      color: var(--accent-gold);
+      border: 1px solid var(--accent-gold);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    h1 {
+      font-family: 'Cinzel', serif;
+      color: var(--accent-cyan);
+      font-size: 1.4rem;
+      text-align: center;
+      margin: 0 0 16px 0;
+    }
+
+    label { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; display: block; margin-top: 12px; }
+    input, button {
+      width: 100%;
+      padding: 14px;
+      margin-top: 6px;
+      border-radius: 10px;
+      border: 1px solid var(--border-color);
+      font-size: 0.95rem;
+      background: #070d18;
+      color: var(--text-light);
+      font-family: inherit;
+    }
+    
+    button.cta-btn {
+      background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+      color: white;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.2s ease;
+    }
+
+    .division-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .div-card {
+      background: #070d18;
+      border: 2px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .div-card:hover { border-color: var(--accent-cyan); }
+    .div-card.selected {
+      border-color: var(--accent-gold);
+      background: rgba(245, 158, 11, 0.1);
+    }
+    .div-card-icon { font-size: 1.5rem; display: block; margin-bottom: 6px; }
+    .div-card-title { font-weight: 700; font-size: 0.88rem; color: var(--text-light); }
+    .div-card-sub { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+
+    .option-card-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+    .option-card {
+      background: #070d18;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      line-height: 1.4;
+      transition: all 0.2s ease;
+    }
+    .option-card:hover { border-color: var(--accent-cyan); }
+    .option-card.selected {
+      border-color: var(--accent-gold);
+      background: rgba(245, 158, 11, 0.12);
+      color: var(--accent-gold);
+      font-weight: 600;
+    }
+
+    .nav-tabs { display: flex; gap: 8px; margin-bottom: 20px; }
+    .tab-btn {
+      flex: 1; padding: 12px; background: #070d18; border: 1px solid var(--border-color);
+      color: var(--text-muted); border-radius: 10px; font-weight: 700; cursor: pointer; font-size: 0.9rem;
+    }
+    .tab-btn.active { background: var(--accent-cyan); color: #070d18; border-color: var(--accent-cyan); }
+
+    .status-badge {
+      background: #1e293b; color: var(--accent-gold); padding: 10px; border-radius: 8px;
+      text-align: center; font-weight: 700; font-size: 0.9rem; border: 1px dashed var(--accent-gold); margin-bottom: 16px;
+    }
+
+    .prompt-box {
+      background: #070d18; padding: 16px; border-left: 4px solid var(--accent-cyan);
+      border-radius: 0 10px 10px 0; margin-bottom: 20px; font-size: 0.95rem; line-height: 1.5;
+    }
+
+    .manual-card { background: #070d18; border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+    .manual-card h3 { margin: 0 0 8px 0; color: var(--accent-gold); font-family: 'Cinzel', serif; font-size: 1.05rem; }
+    .manual-card p { margin: 0 0 12px 0; font-size: 0.88rem; line-height: 1.5; color: var(--text-muted); }
+    .interactive-demo { background: #0f172a; border-radius: 8px; padding: 12px; text-align: center; border: 1px solid #1e293b; }
+    
+    .hidden { display: none !important; }
+    .def-box { background: rgba(56, 189, 248, 0.1); border: 1px solid rgba(56, 189, 248, 0.3); padding: 10px; border-radius: 8px; font-size: 0.82rem; color: var(--accent-cyan); margin-top: 8px; }
+
+    .victory-box {
+      text-align: center; padding: 24px; background: linear-gradient(180deg, #0f2d22 0%, #070d18 100%);
+      border: 2px solid var(--accent-green); border-radius: 12px;
+    }
+    .victory-box h2 { font-family: 'Cinzel', serif; color: var(--accent-green); font-size: 1.6rem; margin-top: 0; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <div class="card">
+    <div class="brand-header">
+      <img src="stemup-logo.png" alt="STEM Up Logo" class="logo-img" onerror="this.style.display='none'; document.getElementById('alt-logo-text').style.display='block';">
+      <span id="alt-logo-text" style="display:none; font-family:'Cinzel', serif; font-weight:bold; color:var(--accent-gold);">STEM UP</span>
+      <span class="stemup-badge">DEVELOPED BY STEM UP</span>
+    </div>
+
+    <div id="setup-section">
+      <h1>Bridge Registration</h1>
+      <p style="text-align: center; color: var(--text-muted); font-size: 0.9rem; margin-top: -10px;">
+        Welcome Navigator. Choose your specialized division to access your tools.
+      </p>
+
+      <label for="user-name">Navigator Name / Callsign:</label>
+      <input type="text" id="user-name" placeholder="e.g. Jassem, Sarah, Navigator A" />
+
+      <label>Select Specialized Division:</label>
+      <div class="division-grid">
+        <div class="div-card" id="div-card-C" onclick="selectDivCard('C')">
+          <span class="div-card-icon">☀️</span>
+          <div class="div-card-title">Team Celestial</div>
+          <div class="div-card-sub">Sun & Stars</div>
+        </div>
+        <div class="div-card" id="div-card-E" onclick="selectDivCard('E')">
+          <span class="div-card-icon">🌬️</span>
+          <div class="div-card-title">Team Environmental</div>
+          <div class="div-card-sub">Winds & Tides</div>
+        </div>
+        <div class="div-card" id="div-card-T" onclick="selectDivCard('T')">
+          <span class="div-card-icon">⚓</span>
+          <div class="div-card-title">Team Traditional</div>
+          <div class="div-card-sub">Sea Floor & Wildlife</div>
+        </div>
+        <div class="div-card" id="div-card-D" onclick="selectDivCard('D')">
+          <span class="div-card-icon">📡</span>
+          <div class="div-card-title">Team Digital</div>
+          <div class="div-card-sub">Sonar & GPS</div>
+        </div>
+      </div>
+
+      <button class="cta-btn" onclick="lockTeam()">Enter Bridge Portal</button>
+    </div>
+
+    <div id="main-section" class="hidden">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+        <span style="font-weight: bold; color: var(--accent-cyan);" id="user-badge">Navigator</span>
+        <span style="background: #1e293b; padding: 4px 10px; border-radius: 12px; font-size: 0.8rem; color: var(--accent-gold);" id="team-badge">Team</span>
+      </div>
+
+      <div class="nav-tabs" id="nav-tabs-bar">
+        <button class="tab-btn active" id="tab-action-btn" onclick="switchTab('action')">Shift Decision</button>
+        <button class="tab-btn" id="tab-ref-btn" onclick="switchTab('ref')">Field Manual & Visuals</button>
+      </div>
+
+      <div id="tab-action">
+        <div class="status-badge" id="shift-status">Shift 1: Mid-Afternoon</div>
+        <div class="prompt-box" id="prompt-text">Loading observation prompts...</div>
+
+        <form id="decision-form">
+          <label id="option-label">Division Recommendation:</label>
+          <div id="option-cards-container" class="option-card-group"></div>
+          <button type="button" class="cta-btn" onclick="submitChoice()">Lock & Transmit Recommendation</button>
+        </form>
+
+        <div id="confirmation-msg" class="hidden" style="color: var(--accent-green); text-align: center; margin-top: 16px; font-weight: bold; background: rgba(52, 211, 153, 0.1); padding: 12px; border-radius: 8px; border: 1px solid var(--accent-green);">
+          ✓ Transmitted! Waiting for other teams to finalize...
+        </div>
+      </div>
+
+      <div id="tab-ref" class="hidden">
+        <div id="manual-content"></div>
+      </div>
+
+      <!-- DYNAMIC FINALE END SCREEN -->
+      <div id="victory-section" class="hidden">
+        
+        <!-- SUCCESS ENDING -->
+        <div id="outcome-success" class="hidden victory-box" style="border-color: #34d399; background: linear-gradient(180deg, #0f2d22 0%, #070d18 100%);">
+          <h2 style="color: #34d399;">⚓ Safe Arrival at Al Wakrah Port!</h2>
+          <p style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.6;">
+            Navigation Excellence! Your precise calculations, stellar observations, and reef warnings brought the entire crew safely across the Gulf to Al Wakrah.
+          </p>
+          <div style="background: rgba(52, 211, 153, 0.15); border: 1px solid #34d399; padding: 12px; border-radius: 8px; font-weight: bold; color: #34d399; margin-top: 12px;">
+            🎓 Certified Master Navigators of the Arabian Gulf
+          </div>
+        </div>
+
+        <!-- OFF-COURSE / STRANDED ENDING -->
+        <div id="outcome-failure" class="hidden victory-box" style="border-color: #ef4444; background: linear-gradient(180deg, #2d0f0f 0%, #070d18 100%);">
+          <h2 style="color: #ef4444;" id="fail-title">⚠️ Vessel Off-Course!</h2>
+          <p style="color: #e2e8f0; font-size: 0.95rem; line-height: 1.6;" id="fail-desc">
+            The ship drifted away from Al Wakrah Port due to navigation errors during the voyage.
+          </p>
+
+          <div style="text-align: left; background: #0f172a; border: 1px solid #1e293b; border-radius: 10px; padding: 14px; margin-top: 16px;">
+            <h4 style="color: #f59e0b; margin: 0 0 8px 0; font-size: 0.9rem;">🔍 Navigation Debrief & Mistakes Log:</h4>
+            <ul id="mistakes-list" style="margin: 0; padding-left: 20px; color: #94a3b8; font-size: 0.82rem; line-height: 1.5;"></ul>
+          </div>
+        </div>
+
+      </div>
+
+  <div class="sidebar-card">
+    <h3 style="font-family: 'Cinzel', serif; color: var(--accent-gold); font-size: 0.95rem; margin-top: 0;">Connect with STEM Up</h3>
+    <div style="background: #070d18; border: 1px dashed var(--border-color); padding: 12px; border-radius: 12px; margin: 8px 0; width: 100%;">
+      <img src="instagram-qr.png" alt="Instagram QR Code" style="width: 140px; height: 140px; object-fit: contain;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=140x140&data=https://instagram.com';">
+    </div>
+    <p style="font-size: 0.78rem; color: var(--text-muted); margin: 4px 0 0 0;">Scan to follow STEM Up on Instagram!</p>
+  </div>
+</div>
+
+<script>
+  const socket = io();
+  let currentTeam = '';
+  let userName = '';
+  let activeShift = 1;
+  let selectedChoiceText = '';
+
+  function selectDivCard(teamCode) {
+    currentTeam = teamCode;
+    document.querySelectorAll('.div-card').forEach(c => c.classList.remove('selected'));
+    document.getElementById(`div-card-${teamCode}`).classList.add('selected');
+  }
+
+  const manuals = {
+    C: `
+      <div class="manual-card">
+        <h3>☀️ Mid-Afternoon Sun Shadows</h3>
+        <p><b>Observation Rule:</b> When heading South down the Qatari coastline, the sun sets in the West (to your right), casting your shadow toward North-East (over your left shoulder).</p>
+        <div class="interactive-demo">
+          <svg viewBox="0 0 200 100" style="width: 100%; max-height: 120px;">
+            <circle cx="30" cy="30" r="12" fill="#f59e0b" />
+            <line x1="30" y1="30" x2="100" y2="80" stroke="#f59e0b" stroke-dasharray="3" />
+            <polygon points="95,80 105,80 100,60" fill="#94a3b8" />
+            <ellipse cx="140" cy="80" rx="35" ry="6" fill="#1e293b" />
+            <text x="140" y="95" fill="#38bdf8" font-size="10" text-anchor="middle">Shadow points North-East</text>
+          </svg>
+        </div>
+        <div class="def-box"><b>Rule of Thumb:</b> Keep your shadow pointing over your left shoulder to maintain a true South heading.</div>
+      </div>
+      <div class="manual-card">
+        <h3>⭐ Kamal & Star Alignment</h3>
+        <p><b>Polaris (North Star):</b> Altitude corresponds directly to latitude. Target latitude for Al Wakrah is 25.17° N (~25° angle above horizon).</p>
+        <div class="def-box"><b>Correction:</b> If Polaris measures 28°, you are too far North. Steer South! In cloudy South skies, use Suhail (Canopus) for True South.</div>
+      </div>
+    `,
+    E: `
+      <div class="manual-card">
+        <h3>🌬️ Coastal Winds (Al-Shamāl & Al-Kaws)</h3>
+        <p><b>Al-Shamāl (NW Wind):</b> Blows down the Gulf, pushing vessels off-course toward eastern deep water or shore. Steering slightly West into the wind holds a straight path.</p>
+        <div class="def-box"><b>Tidal Currents:</b> Falling (ebbing) coastal tides pull South, creating a natural coastal transit vector.</div>
+      </div>
+    `,
+    T: `
+      <div class="manual-card">
+        <h3>⚓ Lead Line & Coastal Wildlife</h3>
+        <p>Tallow fat on the lead-line retrieves bottom soil samples to identify shallow hazards:</p>
+        <div class="interactive-demo" style="text-align: left; font-size: 0.85rem;">
+          <div style="margin-bottom: 8px; color: var(--accent-green);">🐚 <b>Fine White Sand + Shells:</b> Safe coastal channel fairway.</div>
+          <div style="margin-bottom: 8px; color: var(--accent-gold);">🐦 <b>Low Seabird Flight (Al-Ghaq):</b> Birds returning West at dusk indicate land is 10–15 miles away.</div>
+          <div style="color: #ef4444;">🪸 <b>Broken Coral & Bioluminescence:</b> CRITICAL REEF (Fasht)! Turn immediately!</div>
+        </div>
+      </div>
+    `,
+    D: `
+      <div class="manual-card">
+        <h3>📡 GPS & Digital Sonar Profiling</h3>
+        <p>Electronic depth monitoring provides real-time clearance readings under the keel:</p>
+        <div class="def-box"><b>Latitude Target:</b> Doha = 25.30° N | Al Wakrah = 25.17° N. If reading 25.30° N, steer South! Safe Depth > 15 meters.</div>
+      </div>
+    `
+  };
+
+  const prompts = {
+    1: {
+      C: { question: "Shift 1 (Mid-Afternoon): The sun is sinking low on your right. Where is your shadow pointing, and what direction are we heading?", choices: ["1. Shadow points North-East ➔ Keep shadow over left shoulder to steer South", "2. Shadow points South-West ➔ Course is North", "3. Shadow points straight ahead ➔ Course is West"] },
+      E: { question: "Shift 1 (Mid-Afternoon): A steady Al-Shamāl wind blows from the North-West. How must we adjust our steering?", choices: ["1. Steer slightly West into wind to hold a straight South course", "2. Turn East and let wind push us into open sea", "3. Drop anchor and wait for wind to stop"] },
+      T: { question: "Shift 1 (Mid-Afternoon): Flocks of seabirds (Al-Ghaq) are flying in low lines toward the West. What does this reveal?", choices: ["1. Birds fly West to roost; shoreline is 10–15 miles West", "2. Birds indicate open ocean; steer East", "3. Birds mean storm coming from South"] },
+      D: { question: "Shift 1 (Mid-Afternoon): GPS shows current latitude 25.30° N (Doha area). Al Wakrah is at 25.17° N. Where are we?", choices: ["1. North of target; maintain speed and steer South", "2. South of target; turn North", "3. Arrived at target; drop anchor"] }
+    },
+    2: {
+      C: { question: "Shift 2 (Nightfall): Using a Kamal hand tool, Polaris measures 28° above the horizon. What is our status?", choices: ["1. Drifted too far North (target 25° N); adjust course South", "2. On target latitude; stay on course", "3. Drifted too far South; turn North"] },
+      E: { question: "Shift 2 (Nightfall): The tide is falling (ebbing) along the coastline. How does this affect our vessel?", choices: ["1. Falling tide pulls South; use current as natural highway", "2. Tidal current pushes West into land", "3. Falling tide stops all vessel movement"] },
+      T: { question: "Shift 2 (Nightfall): The weighted lead-line brings up fine white sand mixed with shell fragments. What is beneath us?", choices: ["1. Clear, safe coastal channel fairway; safe to proceed", "2. Shallow coral reef (Fasht); reverse engines", "3. Deep ocean trench; drop more line"] },
+      D: { question: "Shift 2 (Nightfall): Digital sonar depth sounder reads a steady 18 meters beneath the hull. Status check?", choices: ["1. Water is deep and safe (>15m); maintain cruise speed", "2. Dangerously shallow (<5m); alter course", "3. False reading; stop engines"] }
+    },
+    3: {
+      C: { question: "Shift 3 (Midnight Crisis): Clouds hide Polaris, but bright star Suhail shines low over water in South. How do we use it?", choices: ["1. Align bow toward Suhail to hold True South (180°)", "2. Turn away from Suhail toward dark North", "3. Wait for morning light"] },
+      E: { question: "Shift 3 (Midnight Crisis): Damp Al-Kaws wind hits from South-East, pushing us toward coastal shoals. What is the maneuver?", choices: ["1. Tack into wave angle to maintain offshore clearance", "2. Turn directly with wind toward shallow shore", "3. Cut all sails and drift freely"] },
+      T: { question: "Shift 3 (Midnight Crisis): Lead-line brings up sharp coral fragments, and bioluminescence appears in breaking waves!", choices: ["1. Shallow reef (Fasht) ahead! Turn outward immediately!", "2. Safe sandy harbor; full speed ahead", "3. Deep trench; drop anchor"] },
+      D: { question: "Shift 3 (Midnight Crisis): Sonar depth drops rapidly from 16 meters down to 4.2 meters! Alarm sounding!", choices: ["1. CRITICAL SHALLOWS! Emergency turn toward deep channel!", "2. False alarm; maintain speed", "3. Increase speed to clear reef"] }
+    }
+  };
+
+  function lockTeam() {
+    const nVal = document.getElementById('user-name').value.trim();
+    if (!nVal) return alert("Please enter your Navigator Name!");
+    if (!currentTeam) return alert("Please select a Specialized Division card!");
+    
+    userName = nVal;
+
+    document.getElementById('setup-section').classList.add('hidden');
+    document.getElementById('main-section').classList.remove('hidden');
+    
+    document.getElementById('user-badge').innerText = `Navigator: ${userName}`;
+    document.getElementById('team-badge').innerText = `Team ${currentTeam}`;
+    document.getElementById('manual-content').innerHTML = manuals[currentTeam];
+
+    updateUI();
+  }
+
+  function switchTab(tab) {
+    if (tab === 'action') {
+      document.getElementById('tab-action').classList.remove('hidden');
+      document.getElementById('tab-ref').classList.add('hidden');
+      document.getElementById('tab-action-btn').classList.add('active');
+      document.getElementById('tab-ref-btn').classList.remove('active');
+    } else {
+      document.getElementById('tab-action').classList.add('hidden');
+      document.getElementById('tab-ref').classList.remove('hidden');
+      document.getElementById('tab-action-btn').classList.remove('active');
+      document.getElementById('tab-ref-btn').classList.add('active');
+    }
+  }
+
+  function selectOptionCard(btnElement, choiceText) {
+    document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+    btnElement.classList.add('selected');
+    selectedChoiceText = choiceText;
+  }
+
+  function updateUI() {
+    document.getElementById('shift-status').innerText = `Shift ${activeShift}: Active Observation Phase`;
+    const data = prompts[activeShift][currentTeam];
+    document.getElementById('prompt-text').innerText = data.question;
+    
+    const container = document.getElementById('option-cards-container');
+    container.innerHTML = '';
+    selectedChoiceText = '';
+
+    // Shuffle options so the correct answer isn't always listed first
+    const shuffledChoices = [...data.choices].sort(() => Math.random() - 0.5);
+
+    shuffledChoices.forEach(choice => {
+      const card = document.createElement('div');
+      card.className = 'option-card';
+      card.innerText = choice;
+      card.onclick = () => selectOptionCard(card, choice);
+      container.appendChild(card);
+    });
+
+    document.getElementById('confirmation-msg').classList.add('hidden');
+  } 
+
+  function submitChoice() {
+    if (!selectedChoiceText) return alert("Please select a recommendation option first!");
+    socket.emit('submitDecision', { shift: activeShift, team: currentTeam, name: userName, choice: selectedChoiceText });
+    document.getElementById('confirmation-msg').classList.remove('hidden');
+  }
+
+  socket.on('stateUpdate', (state) => {
+    if (state.currentShift === 'ended') {
+      document.getElementById('tab-action').classList.add('hidden');
+      document.getElementById('tab-ref').classList.add('hidden');
+      document.getElementById('nav-tabs-bar').classList.add('hidden');
+      document.getElementById('victory-section').classList.remove('hidden');
+
+      if (state.finalOutcome === 'success') {
+        document.getElementById('outcome-success').classList.remove('hidden');
+        document.getElementById('outcome-failure').classList.add('hidden');
+      } else {
+        document.getElementById('outcome-success').classList.add('hidden');
+        document.getElementById('outcome-failure').classList.remove('hidden');
+
+        const isGrounded = state.finalOutcome === 'grounded';
+        document.getElementById('fail-title').innerText = isGrounded ? "🚨 Grounded on Fasht Reefs!" : "⚠️ Stranded Off Halul Island!";
+        document.getElementById('fail-desc').innerText = isGrounded 
+          ? "Unheeded coral warnings led the vessel directly onto shallow reefs south of the fairway." 
+          : "Accumulated steering errors caused the vessel to overshoot the Qatari coastline into open sea.";
+
+        // Populate Mistakes Log
+        const logList = document.getElementById('mistakes-list');
+        logList.innerHTML = '';
+        [1, 2, 3].forEach(s => {
+          ['C', 'E', 'T', 'D'].forEach(t => {
+            const entry = state.submissions[s][t];
+            if (entry && !entry.choice.startsWith('1.')) {
+              const li = document.createElement('li');
+              li.innerHTML = `<b>Shift ${s} (Team ${t}):</b> Selected <i>"${entry.choice}"</i> instead of the correct navigational rule.`;
+              logList.appendChild(li);
+            }
+          });
+        });
+      }
+    } else if (state.currentShift !== activeShift) {
+      activeShift = state.currentShift;
+      document.getElementById('victory-section').classList.add('hidden');
+      document.getElementById('nav-tabs-bar').classList.remove('hidden');
+      switchTab('action');
+      updateUI();
+    }
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Traditional Division — Team Lead Guide</title>
+
+<style>
+@page {
+    size: A4;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #dfe5e8;
+    color: #17252d;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.print-bar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #173d36;
+    padding: 10px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+
+.print-button {
+    border: 0;
+    background: #e8b84a;
+    color: #173d36;
+    font-size: 15px;
+    font-weight: 800;
+    padding: 10px 22px;
+    border-radius: 7px;
+    cursor: pointer;
+}
+
+.page {
+    width: 210mm;
+    height: 297mm;
+    margin: 18px auto;
+    padding: 12mm 14mm 14mm;
+    background: #fffdf7;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,.18);
+    page-break-after: always;
+}
+
+.page:last-child {
+    page-break-after: auto;
+}
+
+:root {
+    --navy:#173d36;
+    --teal:#2d8177;
+    --sea:#dff1ed;
+    --gold:#e8b84a;
+    --sand:#f5ead3;
+    --coral:#d9684b;
+    --green:#3c8065;
+    --ink:#17252d;
+    --muted:#60717a;
+}
+
+h1,h2,h3,p {
+    margin-top: 0;
+}
+
+h1 {
+    font-size: 28px;
+    line-height: 1;
+    color: var(--navy);
+    margin-bottom: 6px;
+}
+
+h2 {
+    font-size: 19px;
+    color: var(--navy);
+    margin-bottom: 6px;
+}
+
+h3 {
+    font-size: 13px;
+    color: var(--navy);
+    margin-bottom: 4px;
+}
+
+p {
+    font-size: 11px;
+    line-height: 1.35;
+    margin-bottom: 6px;
+}
+
+.eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 1.7px;
+    font-size: 9px;
+    font-weight: 800;
+    color: var(--teal);
+    margin-bottom: 4px;
+}
+
+.big-idea {
+    font-size: 15px;
+    line-height: 1.2;
+    font-weight: 800;
+    color: var(--navy);
+}
+
+.header {
+    border-bottom: 3px solid var(--gold);
+    padding-bottom: 8px;
+    margin-bottom: 10px;
+}
+
+.header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+}
+
+.badge {
+    background: var(--navy);
+    color: white;
+    padding: 7px 10px;
+    border-radius: 5px;
+    font-weight: 800;
+    font-size: 10px;
+    text-align: center;
+}
+
+.card {
+    border-radius: 8px;
+    padding: 9px;
+    margin-bottom: 7px;
+    background: white;
+    border: 1px solid #d7dfe2;
+}
+
+.sea-card {
+    background: var(--sea);
+    border-color: #b8dcd5;
+}
+
+.gold-card {
+    background: #fff4d8;
+    border-color: #efd18a;
+}
+
+.dark-card {
+    background: var(--navy);
+    color: white;
+    border-color: var(--navy);
+}
+
+.dark-card h2,
+.dark-card h3 {
+    color: white;
+}
+
+.dark-card p {
+    color: #eef5f7;
+}
+
+.two-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 7px;
+}
+
+.three-col {
+    display: grid;
+    grid-template-columns: repeat(3,1fr);
+    gap: 6px;
+}
+
+.flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin: 7px 0;
+}
+
+.flow-box {
+    background: var(--navy);
+    color: white;
+    padding: 7px 9px;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 10px;
+    font-weight: 800;
+}
+
+.arrow {
+    color: var(--gold);
+    font-size: 17px;
+    font-weight: bold;
+}
+
+.diagram {
+    width: 100%;
+    display: block;
+    border-radius: 7px;
+    background: #eef8f6;
+    border: 1px solid #c8e0dc;
+}
+
+.caption {
+    text-align: center;
+    font-size: 8px;
+    color: var(--muted);
+    margin-top: 3px;
+}
+
+.rule {
+    border-left: 4px solid var(--gold);
+    background: #fff8e7;
+    padding: 7px 9px;
+    margin: 6px 0;
+    border-radius: 0 5px 5px 0;
+    font-size: 10.5px;
+    line-height: 1.3;
+}
+
+.rule strong {
+    color: var(--navy);
+}
+
+.answer {
+    color: var(--green);
+    font-weight: 900;
+}
+
+.script {
+    background: #f2f5f5;
+    border-left: 3px solid var(--teal);
+    padding: 6px 8px;
+    border-radius: 0 5px 5px 0;
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1.25;
+}
+
+.hint {
+    display: grid;
+    grid-template-columns: 25px 1fr;
+    gap: 7px;
+    align-items: start;
+    margin-bottom: 5px;
+}
+
+.hint-number {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: var(--navy);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 900;
+    font-size: 10px;
+}
+
+.mission-rule {
+    text-align: center;
+    padding: 10px;
+    background: var(--navy);
+    color: white;
+    border-radius: 7px;
+    margin-bottom: 7px;
+}
+
+.mission-rule .title {
+    font-size: 9px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 900;
+}
+
+.mission-rule .main {
+    font-size: 15px;
+    font-weight: 900;
+    margin-top: 3px;
+}
+
+.crew-box {
+    border: 1px solid #d5dfe2;
+    border-radius: 6px;
+    padding: 7px;
+    background: white;
+}
+
+.crew-box strong {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--navy);
+    font-size: 10px;
+}
+
+.crew-box p {
+    margin: 0;
+    font-size: 9.5px;
+}
+
+.small {
+    font-size: 9px;
+    line-height: 1.25;
+    color: var(--muted);
+}
+
+.footer {
+    position: absolute;
+    bottom: 6mm;
+    left: 14mm;
+    right: 14mm;
+    border-top: 1px solid #d5dfe2;
+    padding-top: 4px;
+    display: flex;
+    justify-content: space-between;
+    color: #718087;
+    font-size: 7.5px;
+}
+
+@media print {
+    body {
+        background: white;
+    }
+
+    .print-bar {
+        display: none;
+    }
+
+    .page {
+        margin: 0;
+        box-shadow: none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="print-bar">
+    <button class="print-button" onclick="window.print()">
+        🖨️ Print / Save as PDF
+    </button>
+</div>
+
+
+<!-- =========================================================
+     PAGE 1
+========================================================= -->
+
+<section class="page">
+
+<div class="header">
+    <div class="header-row">
+
+        <div>
+            <div class="eyebrow">Trans-Gulf Navigation Simulation</div>
+            <h1>🪸 Traditional Division</h1>
+            <p class="big-idea">Team Lead Expert Guide</p>
+        </div>
+
+        <div class="badge">
+            NATURE'S<br>
+            LOOKOUTS
+        </div>
+
+    </div>
+</div>
+
+
+<div class="card sea-card">
+
+    <div class="eyebrow">Your mission</div>
+
+    <div class="big-idea">
+        Read the Gulf when instruments aren't available.
+    </div>
+
+    <p>
+        Watch the living and visible clues around the vessel —
+        birds, water colour and coastline — to understand
+        where the safe water is.
+    </p>
+
+</div>
+
+
+<div class="dark-card card">
+
+    <h2>🧭 Before GPS, the environment was the map.</h2>
+
+    <p style="font-size:12px;font-weight:700;">
+        Experienced sailors didn't see an empty ocean.
+        They saw clues.
+    </p>
+
+    <div class="flow">
+
+        <div class="flow-box">🐦 BIRDS</div>
+        <div class="arrow">+</div>
+        <div class="flow-box">🌊 WATER</div>
+        <div class="arrow">+</div>
+        <div class="flow-box">🏝️ COAST</div>
+
+    </div>
+
+    <p style="text-align:center;font-weight:800;margin-bottom:0;">
+        = INFORMATION
+    </p>
+
+</div>
+
+
+<div class="two-col">
+
+    <div class="card">
+
+        <h2>Then</h2>
+
+        <p>
+            Mariners used landmarks, currents, seabirds,
+            water colour, reefs and other environmental signs
+            to understand where they were.
+        </p>
+
+        <p style="margin-bottom:0;">
+            Near shore, this could mean the difference between
+            reaching land safely and <strong>running aground.</strong>
+        </p>
+
+    </div>
+
+
+    <div class="card">
+
+        <h2>Today</h2>
+
+        <p>
+            GPS, charts, sonar and satellites give us precise
+            information.
+        </p>
+
+        <p style="margin-bottom:0;">
+            But if technology fails, the environment is
+            <strong>still giving you information.</strong>
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="card gold-card">
+
+    <h2>💡 The survival question</h2>
+
+    <p class="big-idea">
+        “If all my electronics stopped working,
+        what could I learn by simply looking around?”
+    </p>
+
+    <p style="text-align:center;font-weight:900;color:var(--navy);margin-bottom:0;">
+        Nature doesn't give you coordinates. It gives you clues.
+    </p>
+
+</div>
+
+
+<h2>Your two environmental clues</h2>
+
+<div class="two-col">
+
+    <div class="card sea-card" style="text-align:center;">
+
+        <div style="font-size:32px;">🐦</div>
+
+        <h2>SEABIRDS</h2>
+
+        <p class="big-idea">DIRECTION</p>
+
+        <p style="margin-bottom:0;">
+            Their movement can reveal the direction
+            of nearby land.
+        </p>
+
+    </div>
+
+
+    <div class="card gold-card" style="text-align:center;">
+
+        <div style="font-size:32px;">🪸</div>
+
+        <h2>WATER COLOUR</h2>
+
+        <p class="big-idea">DEPTH</p>
+
+        <p style="margin-bottom:0;">
+            Changes in water colour can warn us
+            about shallow reef areas.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+    <span>TRADITIONAL DIVISION</span>
+    <span>01 / 04</span>
+</div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PAGE 2
+========================================================= -->
+
+<section class="page">
+
+<div class="header">
+
+    <div class="eyebrow">Traditional Navigation</div>
+
+    <h1>🐦 + 🌊 Read the Gulf</h1>
+
+    <p>
+        Turn an observation into a navigation decision.
+    </p>
+
+</div>
+
+
+<div class="card sea-card">
+
+    <h2>🐦 1. Seabird Flight Trajectory</h2>
+
+    <p class="big-idea">
+        Birds can reveal the direction of nearby land.
+    </p>
+
+
+    <svg class="diagram"
+         viewBox="0 0 700 230"
+         xmlns="http://www.w3.org/2000/svg">
+
+        <rect width="700" height="230" fill="#dff1ed"/>
+
+        <path d="M0 0 L160 0 L160 65
+                 Q130 95 155 125
+                 Q125 160 160 195
+                 L160 230
+                 L0 230 Z"
+              fill="#e7d4a5"/>
+
+        <text x="25" y="115"
+              font-family="Arial"
+              font-size="17"
+              font-weight="bold"
+              fill="#705c31">
+            QATARI
+        </text>
+
+        <text x="25" y="137"
+              font-family="Arial"
+              font-size="17"
+              font-weight="bold"
+              fill="#705c31">
+            MAINLAND
+        </text>
+
+        <g fill="#173d36">
+            <path d="M285 75 q12 -12 24 0 q-12 -4 -24 0"/>
+            <path d="M330 105 q12 -12 24 0 q-12 -4 -24 0"/>
+            <path d="M375 60 q12 -12 24 0 q-12 -4 -24 0"/>
+            <path d="M420 95 q12 -12 24 0 q-12 -4 -24 0"/>
+        </g>
+
+        <line x1="500" y1="125"
+              x2="220" y2="125"
+              stroke="#2d8177"
+              stroke-width="8"
+              marker-end="url(#arrowTeal)"/>
+
+        <text x="315" y="105"
+              font-family="Arial"
+              font-size="18"
+              font-weight="bold"
+              fill="#2d8177">
+            WEST
+        </text>
+
+        <text x="235" y="200"
+              font-family="Arial"
+              font-size="16"
+              font-weight="bold"
+              fill="#173d36">
+            DUSK ROOSTING FLIGHT
+        </text>
+
+        <defs>
+            <marker id="arrowTeal"
+                    markerWidth="10"
+                    markerHeight="10"
+                    refX="8"
+                    refY="3"
+                    orient="auto">
+                <path d="M0,0 L0,6 L9,3 z"
+                      fill="#2d8177"/>
+            </marker>
+        </defs>
+
+    </svg>
+
+    <div class="caption">
+        In the simulation: seabirds flying WEST toward their roost indicate land lies WEST.
+    </div>
+
+</div>
+
+
+<div class="rule">
+
+    <strong>STATION RULE:</strong>
+    Birds flying <strong>WEST</strong> →
+    Qatari mainland / shoreline lies <strong>WEST.</strong>
+
+</div>
+
+
+<div class="card gold-card">
+
+    <h2>🪸 2. Fasht Reef Avoidance</h2>
+
+    <p class="big-idea">
+        Water colour can reveal a dangerous change in depth.
+    </p>
+
+
+    <div class="two-col">
+
+        <div style="text-align:center;">
+
+            <div style="
+                height:62px;
+                border-radius:7px;
+                background:#63c9b4;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                color:#083c35;
+                font-weight:900;
+                font-size:17px;">
+                EMERALD
+            </div>
+
+            <p style="font-weight:800;margin:4px 0 0;">
+                SAFE CHANNEL
+            </p>
+
+            <p class="small" style="margin:0;">
+                10–20 m
+            </p>
+
+        </div>
+
+
+        <div style="text-align:center;">
+
+            <div style="
+                height:62px;
+                border-radius:7px;
+                background:#315c59;
+                display:flex;
+                align-items:center;
+                justify-content:center;
+                color:white;
+                font-weight:900;
+                font-size:17px;">
+                DARK PATCH
+            </div>
+
+            <p style="font-weight:800;margin:4px 0 0;color:#d9684b;">
+                DANGER
+            </p>
+
+            <p class="small" style="margin:0;">
+                Fasht reef &lt; 3 m
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="rule">
+
+    <strong>STATION RULE:</strong>
+    Dark patches → possible Fasht reef →
+    <strong>turn OUTWARD toward deeper water immediately.</strong>
+
+</div>
+
+
+<div class="dark-card card">
+
+    <h2>🧠 The key distinction</h2>
+
+    <div class="two-col">
+
+        <div>
+            <h3>🐦 BIRDS</h3>
+            <p style="margin-bottom:0;">
+                Direction / nearby land.
+            </p>
+        </div>
+
+        <div>
+            <h3>🪸 WATER COLOUR</h3>
+            <p style="margin-bottom:0;">
+                Depth / reef danger.
+            </p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+    <span>TRADITIONAL DIVISION</span>
+    <span>02 / 04</span>
+</div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PAGE 3 — COMPRESSED
+========================================================= -->
+
+<section class="page">
+
+<div class="header">
+
+    <div class="eyebrow">Breakout Room</div>
+
+    <h1>🎓 Become the Gulf Expert</h1>
+
+    <p>
+        Give the observation. Let students discover the meaning.
+    </p>
+
+</div>
+
+
+<div class="dark-card card">
+
+    <h2>⏱ Suggested breakout: 15–20 minutes</h2>
+
+    <div class="three-col">
+
+        <div style="text-align:center;">
+            <div style="font-size:22px;">👀</div>
+            <h3 style="color:white;">OBSERVE</h3>
+            <p style="font-size:9px;margin:0;">What do you see?</p>
+        </div>
+
+        <div style="text-align:center;">
+            <div style="font-size:22px;">🧠</div>
+            <h3 style="color:white;">INTERPRET</h3>
+            <p style="font-size:9px;margin:0;">What could it mean?</p>
+        </div>
+
+        <div style="text-align:center;">
+            <div style="font-size:22px;">🧭</div>
+            <h3 style="color:white;">ACT</h3>
+            <p style="font-size:9px;margin:0;">What should we do?</p>
+        </div>
+
+    </div>
+
+</div>
+
+
+<h2>🐦 Challenge 1 — Where is land?</h2>
+
+<div class="card sea-card">
+
+    <div style="
+        display:flex;
+        justify-content:center;
+        align-items:center;
+        gap:12px;
+        font-size:16px;
+        font-weight:900;
+        margin-bottom:7px;">
+
+        <span>🐦</span>
+        <span>→</span>
+        <span style="color:var(--teal);">WEST</span>
+        <span>→</span>
+        <span>🏝️</span>
+
+    </div>
+
+    <div class="script">
+        “Where are the birds flying?”
+    </div>
+
+    <div class="script" style="margin-top:4px;">
+        “Why might they be flying in that direction?”
+    </div>
+
+    <div class="script" style="margin-top:4px;">
+        “What does that tell us about the shoreline?”
+    </div>
+
+    <p class="small" style="margin:6px 0 0;">
+        <strong>Target discovery:</strong>
+        WEST → shoreline / mainland lies WEST.
+    </p>
+
+</div>
+
+
+<h2>🪸 Challenge 2 — The dark patch</h2>
+
+<div class="card gold-card">
+
+    <div style="
+        height:38px;
+        border-radius:6px;
+        background:linear-gradient(
+            90deg,
+            #63c9b4 0%,
+            #63c9b4 48%,
+            #315c59 48%,
+            #315c59 65%,
+            #63c9b4 65%
+        );
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        color:white;
+        font-weight:900;">
+        EMERALD → DARK → EMERALD
+    </div>
+
+    <div class="script" style="margin-top:7px;">
+        “What changed in the water?”
+    </div>
+
+    <div class="script" style="margin-top:4px;">
+        “What does a dark patch mean in our field guide?”
+    </div>
+
+    <div class="script" style="margin-top:4px;">
+        “Do we continue toward it or move toward deeper water?”
+    </div>
+
+    <p class="small" style="margin:6px 0 0;">
+        <strong>Target discovery:</strong>
+        dark patch → Fasht reef → turn outward.
+    </p>
+
+</div>
+
+
+<h2>🧠 Challenge 3 — What kind of clue?</h2>
+
+<div class="two-col">
+
+    <div class="rule">
+
+        <strong>🐦 BIRD</strong>
+
+        <p style="margin:4px 0;">
+            “Where is something going?”
+        </p>
+
+        <span class="answer">
+            → DIRECTION / LAND
+        </span>
+
+    </div>
+
+
+    <div class="rule">
+
+        <strong>🌊 WATER</strong>
+
+        <p style="margin:4px 0;">
+            “What does the water look like?”
+        </p>
+
+        <span class="answer">
+            → DEPTH / REEF
+        </span>
+
+    </div>
+
+</div>
+
+
+<div class="card sea-card">
+
+    <h2>🔭 Connect with the other teams</h2>
+
+    <div class="two-col">
+
+        <div class="crew-box">
+
+            <strong>🐦 + 🔭 CELESTIAL</strong>
+
+            <p>
+                “Your navigation gives us direction.
+                Our observations can help confirm where land should be.”
+            </p>
+
+        </div>
+
+
+        <div class="crew-box">
+
+            <strong>🪸 + 📡 DIGITAL</strong>
+
+            <p>
+                “Can your depth reading confirm our water-colour clue?”
+            </p>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<div class="card gold-card">
+
+    <h2>✅ Ready for the mission?</h2>
+
+    <div class="two-col">
+
+        <ul style="
+            margin:0;
+            padding-left:18px;
+            font-size:10px;
+            line-height:1.45;">
+
+            <li>Birds can reveal direction.</li>
+            <li>WEST → land WEST.</li>
+
+        </ul>
+
+        <ul style="
+            margin:0;
+            padding-left:18px;
+            font-size:10px;
+            line-height:1.45;">
+
+            <li>Dark patches warn of reefs.</li>
+            <li>Reef → turn toward deeper water.</li>
+
+        </ul>
+
+    </div>
+
+</div>
+
+
+<div class="footer">
+    <span>TRADITIONAL DIVISION</span>
+    <span>03 / 04</span>
+</div>
+
+</section>
+
+
+
+<!-- =========================================================
+     PAGE 4
+========================================================= -->
+
+<section class="page">
+
+<div class="header">
+
+    <div class="eyebrow">Keep Beside the Console</div>
+
+    <h1>🪸 Mission Card</h1>
+
+    <p>
+        Your eyes are the backup navigation system.
+    </p>
+
+</div>
+
+
+<div class="mission-rule">
+
+    <div class="title">🐦 Seabird Trajectory</div>
+
+    <div class="main">
+        BIRDS FLY WEST → LAND IS WEST
+    </div>
+
+</div>
+
+
+<div class="mission-rule">
+
+    <div class="title">🪸 Fasht Reef</div>
+
+    <div class="main">
+        DARK PATCH → SHALLOW REEF → TURN OUTWARD
+    </div>
+
+</div>
+
+
+<div class="card sea-card">
+
+    <h2>🔄 Every traditional observation</h2>
+
+    <div class="flow">
+
+        <div class="flow-box">👀 SEE</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">🧠 READ</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">⚠️ ASSESS</div>
+        <div class="arrow">→</div>
+        <div class="flow-box">🧭 ACT</div>
+
+    </div>
+
+</div>
+
+
+<h2>🆘 Hint ladder</h2>
+
+<div class="card">
+
+    <div class="hint">
+
+        <div class="hint-number">1</div>
+
+        <div>
+            <h3>OBSERVE</h3>
+            <div class="script">
+                “What clue has appeared?”
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="hint">
+
+        <div class="hint-number">2</div>
+
+        <div>
+            <h3>CLASSIFY</h3>
+            <div class="script">
+                “Is that clue telling us about direction or depth?”
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="hint">
+
+        <div class="hint-number">3</div>
+
+        <div>
+            <h3>INTERPRET</h3>
+            <div class="script">
+                “What does our field guide say that clue means?”
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="hint">
+
+        <div class="hint-number">4</div>
+
+        <div>
+            <h3>DECIDE</h3>
+            <div class="script">
+                “So what should we tell the helm?”
+            </div>
+        </div>
+
+    </div>
+
+
+    <div class="hint">
+
+        <div class="hint-number">!</div>
+
+        <div>
+            <h3>LAST RESORT</h3>
+            <div class="script">
+                “Look at the colour or direction. What changed from the safe situation?”
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<h2>🤝 Cross-team calls</h2>
+
+<div class="two-col">
+
+    <div class="crew-box">
+
+        <strong>🧭 CELESTIAL</strong>
+
+        <p>
+            “What direction are we currently trying to maintain?”
+        </p>
+
+    </div>
+
+
+    <div class="crew-box">
+
+        <strong>📡 DIGITAL</strong>
+
+        <p>
+            “Can your instruments confirm the depth?”
+        </p>
+
+    </div>
+
+
+    <div class="crew-box">
+
+        <strong>💨 ENVIRONMENTAL</strong>
+
+        <p>
+            “Does the wind or swell affect our correction?”
+        </p>
+
+    </div>
+
+
+    <div class="crew-box">
+
+        <strong>YOUR ROLE</strong>
+
+        <p>
+            Provide the environmental clue.
+            The whole crew makes the final decision.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="dark-card card"
+     style="margin-top:8px;text-align:center;">
+
+    <div style="
+        font-size:10px;
+        color:var(--gold);
+        font-weight:900;
+        letter-spacing:1px;">
+        🪸 THE GOLDEN RULE
+    </div>
+
+    <div style="
+        font-size:18px;
+        font-weight:900;
+        margin:6px 0;">
+        THE OCEAN IS TALKING.
+    </div>
+
+    <div style="font-size:13px;">
+        Your job is to notice what it is saying.
+    </div>
+
+</div>
+
+
+<div class="card gold-card" style="text-align:center;">
+
+    <div style="
+        font-size:9px;
+        text-transform:uppercase;
+        letter-spacing:1px;
+        font-weight:900;">
+        Your job
+    </div>
+
+    <div style="
+        font-size:18px;
+        font-weight:900;
+        color:var(--navy);
+        margin:4px 0;">
+        👀 SEE → 🧠 READ → 🧭 HELP THE CREW
+    </div>
+
+    <div style="font-size:10px;font-weight:800;">
+        Keep the vessel away from the Fasht and toward Al Wakrah.
+    </div>
+
+</div>
+
+
+<div class="footer">
+    <span>TRADITIONAL DIVISION • MISSION READY</span>
+    <span>04 / 04</span>
+</div>
+
+</section>
+
+</body>
+</html>

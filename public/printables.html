@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>STEM UP - Trans-Gulf Navigation Division Manuals</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: #020617;
+      color: #f8fafc;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    /* PRINT & PAGE BREAK SYSTEM */
+    @media print {
+      @page {
+        size: A4 portrait;
+        margin: 10mm;
+      }
+      body { background: #ffffff !important; color: #000000 !important; }
+      .page-container { margin: 0 !important; gap: 0 !important; }
+      .page { 
+        page-break-after: always !important; 
+        page-break-inside: avoid !important;
+        border: 2px solid #000000 !important; 
+        background: #ffffff !important; 
+        color: #000000 !important;
+        height: 100vh !important;
+        max-height: 100vh !important;
+        margin: 0 !important;
+        padding: 16px !important;
+        box-shadow: none !important;
+      }
+      .no-print { display: none !important; }
+      .rule-card, .role-box, .instruction-box { 
+        background: #f8fafc !important; 
+        border: 1px solid #000000 !important; 
+        color: #000000 !important; 
+      }
+      .diagram-box { background: #f1f5f9 !important; border: 1px solid #000000 !important; }
+      svg text { fill: #000000 !important; }
+      .badge { border-color: #000 !important; color: #000 !important; }
+    }
+
+    .no-print-bar {
+      background: #0f172a;
+      padding: 16px;
+      text-align: center;
+      border-bottom: 2px solid #38bdf8;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .print-btn {
+      background: #059669;
+      color: white;
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .page-container {
+      max-width: 900px;
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .page {
+      background: #0f172a;
+      border: 2px solid #1e293b;
+      border-radius: 12px;
+      padding: 20px;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .page-header {
+      border-bottom: 2px solid #f59e0b;
+      padding-bottom: 8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .page-header h1 {
+      font-family: 'Cinzel', serif;
+      margin: 0;
+      font-size: 1.25rem;
+      color: #f59e0b;
+    }
+
+    .badge {
+      background: rgba(245, 158, 11, 0.15);
+      color: #f59e0b;
+      border: 1px solid #f59e0b;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.72rem;
+      font-weight: bold;
+    }
+
+    .role-box {
+      background: #030a16;
+      border: 1px solid #38bdf8;
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      font-size: 0.78rem;
+      line-height: 1.35;
+    }
+
+    .role-box h2 {
+      margin: 0 0 4px 0;
+      font-size: 0.88rem;
+      color: #38bdf8;
+    }
+
+    .instruction-box {
+      background: rgba(52, 211, 153, 0.1);
+      border: 1px solid #34d399;
+      border-radius: 8px;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      font-size: 0.75rem;
+      color: #34d399;
+      line-height: 1.35;
+    }
+
+    /* GRID FIX: Forces exact side-by-side alignment on all pages */
+    .grid-2col {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr !important;
+      gap: 12px !important;
+      align-items: stretch;
+    }
+
+    .rule-card {
+      background: #030a16;
+      border: 1px solid #1e293b;
+      border-radius: 8px;
+      padding: 10px;
+      font-size: 0.75rem;
+      line-height: 1.4;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .rule-card h3 {
+      margin-top: 0;
+      color: #f59e0b;
+      font-size: 0.82rem;
+      border-bottom: 1px solid #1e293b;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
+    }
+
+    .diagram-box {
+      background: #070d18;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 6px;
+      margin-top: 6px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .diagram-caption {
+      font-size: 0.68rem;
+      color: #38bdf8;
+      margin-top: 4px;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    svg { width: 100%; height: auto; max-height: 140px; }
+  </style>
+</head>
+<body>
+
+  <div class="no-print-bar no-print">
+    <button class="print-btn" onclick="window.print()">🖨️ Print 4-Page Field Manuals</button>
+  </div>
+
+  <div class="page-container">
+
+    <!-- PAGE 1: CELESTIAL DIVISION -->
+    <div class="page">
+      <div>
+        <div class="page-header">
+          <h1>☀️ Celestial Division Field Manual</h1>
+          <span class="badge">STEM UP NAV STATION</span>
+        </div>
+
+        <div class="role-box">
+          <h2>👋 Welcome Team! Who You Are: The Navigators of the Sky</h2>
+          <p style="margin:0;">
+            You read the sun by day and stars by night. Long before GPS, mariners relied on shadow lengths and star angles to navigate. Without your table, the dhow is sailing blind in the dark!
+          </p>
+        </div>
+
+        <div class="instruction-box">
+          <b>📋 HOW TO PLAY YOUR TURN:</b><br>
+          1. Read the shift observation on your station screen.<br>
+          2. Match your observation with the 2 visual guides below.<br>
+          3. Discuss with your team and select your helm decision on the Console tablet!
+        </div>
+
+        <div class="grid-2col">
+          <div class="rule-card">
+            <div>
+              <h3>1. Solar Shadow Tracking</h3>
+              <p>• Noon shadows in the Gulf project <b>NORTH</b>.</p>
+              <p>• A mid-day shadow pointing <b>North-East</b> means the Sun is South-West.</p>
+              <p>• <b>STEERING RULE:</b> Keep the North-East shadow over your <b>LEFT SHOULDER</b> to travel <b>SOUTH</b>.</p>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 200 120">
+                <rect width="200" height="120" fill="#030a16" rx="6"/>
+                <polygon points="100,20 112,80 88,80" fill="#38bdf8"/>
+                <circle cx="100" cy="55" r="4" fill="#fff"/>
+                <circle cx="40" cy="100" r="8" fill="#f59e0b"/>
+                <line x1="40" y1="100" x2="145" y2="25" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="3,3"/>
+                <line x1="100" y1="55" x2="145" y2="25" stroke="#ef4444" stroke-width="3"/>
+                <text x="130" y="18" fill="#ef4444" font-size="8" font-weight="bold">NE Shadow</text>
+                <text x="75" y="105" fill="#38bdf8" font-size="8">Heading South</text>
+              </svg>
+              <div class="diagram-caption">FIG 1.1: Solar Shadow Alignment</div>
+            </div>
+          </div>
+
+          <div class="rule-card">
+            <div>
+              <h3>2. Polaris Altitude Angle</h3>
+              <p>• The angle of Polaris above horizon equals your <b>Latitude</b>.</p>
+              <p>• Departure: <b>29.2° N</b> | Target Port: <b>25.17° N</b></p>
+              <p>• <b>STEERING RULE:</b> If Polaris is higher than 25.17°, keep steering <b>SOUTH</b>.</p>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 200 120">
+                <rect width="200" height="120" fill="#030a16" rx="6"/>
+                <line x1="15" y1="95" x2="185" y2="95" stroke="#38bdf8" stroke-width="2"/>
+                <text x="125" y="108" fill="#38bdf8" font-size="8">Horizon (0°)</text>
+                <circle cx="35" cy="90" r="4" fill="#fff"/>
+                <polygon points="150,15 152,21 158,21 153,25 155,31 150,27 145,31 147,25 142,21 148,21" fill="#f59e0b"/>
+                <line x1="35" y1="90" x2="150" y2="23" stroke="#34d399" stroke-width="1.5" stroke-dasharray="3,3"/>
+                <path d="M 75,95 A 35,35 0 0,0 68,70" fill="none" stroke="#f59e0b" stroke-width="2"/>
+                <text x="75" y="82" fill="#f59e0b" font-size="8" font-weight="bold">Angle = Latitude</text>
+              </svg>
+              <div class="diagram-caption">FIG 1.2: Polaris Sighting Arc</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 2: ENVIRONMENTAL DIVISION -->
+    <div class="page">
+      <div>
+        <div class="page-header">
+          <h1>💨 Environmental Division Field Manual</h1>
+          <span class="badge">STEM UP NAV STATION</span>
+        </div>
+
+        <div class="role-box">
+          <h2>👋 Welcome Team! Who You Are: The Wind & Wave Handlers</h2>
+          <p style="margin:0;">
+            You feel the forces pushing against the ship. Strong crosswinds (*Shamal*) and tidal currents continuously try to blow the vessel off-course into deep ocean. You calculate forces to keep the ship steady!
+          </p>
+        </div>
+
+        <div class="instruction-box">
+          <b>📋 HOW TO PLAY YOUR TURN:</b><br>
+          1. Read the shift observation on your station screen.<br>
+          2. Match your observation with the 2 visual guides below.<br>
+          3. Discuss with your team and select your helm decision on the Console tablet!
+        </div>
+
+        <div class="grid-2col">
+          <div class="rule-card">
+            <div>
+              <h3>1. Shamal Crosswind Vector</h3>
+              <p>• Winter <i>Shamal</i> winds blow out of the <b>North-West (NW)</b>.</p>
+              <p>• Uncorrected drift pushes the ship <b>EAST</b> into open sea.</p>
+              <p>• <b>STEERING RULE:</b> Crab heading slightly <b>WEST</b> into wind to hold a South course.</p>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 200 120">
+                <rect width="200" height="120" fill="#030a16" rx="6"/>
+                <line x1="100" y1="12" x2="100" y2="105" stroke="#34d399" stroke-width="2" stroke-dasharray="4,4"/>
+                <text x="105" y="100" fill="#34d399" font-size="8">True Course (South)</text>
+                <line x1="25" y1="18" x2="75" y2="55" stroke="#38bdf8" stroke-width="3"/>
+                <polygon points="75,55 65,48 68,60" fill="#38bdf8"/>
+                <text x="15" y="14" fill="#38bdf8" font-size="8" font-weight="bold">NW Wind</text>
+                <line x1="100" y1="58" x2="80" y2="90" stroke="#f59e0b" stroke-width="2.5"/>
+                <text x="20" y="82" fill="#f59e0b" font-size="8">Steer West Into Wind</text>
+              </svg>
+              <div class="diagram-caption">FIG 2.1: Wind Compensation</div>
+            </div>
+          </div>
+
+          <div class="rule-card">
+            <div>
+              <h3>2. Wave Swell Tacking</h3>
+              <p>• Waves striking at 90° sideways cause severe rolling.</p>
+              <p>• <b>STEERING RULE:</b> Tack the hull into incoming swells at a <b>45° angle</b> to slice through waves safely.</p>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 200 120">
+                <rect width="200" height="120" fill="#030a16" rx="6"/>
+                <path d="M 15,25 Q 55,15 95,25 T 185,25" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+                <path d="M 15,55 Q 55,45 95,55 T 185,55" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+                <path d="M 15,85 Q 55,75 95,85 T 185,85" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+                <g transform="translate(100,55) rotate(-45)">
+                  <polygon points="0,-14 5,8 -5,8" fill="#34d399" stroke="#fff" stroke-width="1"/>
+                </g>
+                <text x="115" y="35" fill="#38bdf8" font-size="8">Swell Waves</text>
+                <text x="110" y="88" fill="#34d399" font-size="8" font-weight="bold">45° Tacking Angle</text>
+              </svg>
+              <div class="diagram-caption">FIG 2.2: Wave Swell Tacking</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: TRADITIONAL DIVISION -->
+    <div class="page">
+      <div>
+        <div class="page-header">
+          <h1>🪸 Traditional Division Field Manual</h1>
+          <span class="badge">STEM UP NAV STATION</span>
+        </div>
+
+        <div class="role-box">
+          <h2>👋 Welcome Team! Who You Are: Nature's Lookouts & Reef Experts</h2>
+          <p style="margin:0;">
+            You read the living signs of the Gulf—seabird flight paths, sea foam, and water hues. The coast of Qatar is guarded by hidden coral reefs (*Fasht*). You are the primary defense against running aground!
+          </p>
+        </div>
+
+        <div class="instruction-box">
+          <b>📋 HOW TO PLAY YOUR TURN:</b><br>
+          1. Read the shift observation on your station screen.<br>
+          2. Match your observation with the 2 visual guides below.<br>
+          3. Discuss with your team and select your helm decision on the Console tablet!
+        </div>
+
+        <div class="grid-2col">
+          <div class="rule-card">
+            <div>
+              <h3>1. Seabird Flight Trajectory</h3>
+              <p>• Seabirds fly <b>WEST</b> toward shoreline islands at dusk to roost.</p>
+              <p>• <b>STEERING RULE:</b> Birds flying West confirm that the Qatari mainland lies to the <b>WEST</b>.</p>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 200 120">
+                <rect width="200" height="120" fill="#030a16" rx="6"/>
+                <path d="M 25,10 Q 35,60 15,110" fill="none" stroke="#f59e0b" stroke-width="3"/>
+                <text x="5" y="16" fill="#f59e0b" font-size="8" font-weight="bold">Shore (West)</text>
+                <g fill="#38bdf8">
+                  <path d="M 130,30 Q 135,22 140,30 Q 145,22 150,30 Q 140,27 130,30 Z"/>
+                  <path d="M 110,55 Q 115,47 120,55 Q 125,47 130,55 Q 120,52 110,55 Z"/>
+                </g>
+                <line x1="140" y1="55" x2="55" y2="55" stroke="#34d399" stroke-width="2" stroke-dasharray="4,2"/>
+                <polygon points="55,55 65,50 65,60" fill="#34d399"/>
+                <text x="60" y="46" fill="#34d399" font-size="8" font-weight="bold">Roost Path (West)</text>
+              </svg>
+              <div class="diagram-caption">FIG 3.1: Seabird Roost Trajectory</div>
+            </div>
+          </div>
+
+          <div class="rule-card">
+            <div>
+              <h3>2. Fasht Reef Avoidance</h3>
+              <p>• <b>Emerald Water:</b> Safe coastal channel (10–20m deep).</p>
+              <p>• <b>Dark Patches:</b> Dangerous <i>Fasht</i> coral reefs (< 3m deep).</p>
+              <p>• <b>STEERING RULE:</b> Turn outward toward deep water immediately upon seeing dark patches!</p>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 200 120">
+                <rect width="200" height="120" fill="#030a16" rx="6"/>
+                <rect x="10" y="12" width="180" height="88" fill="#059669" opacity="0.3" rx="4"/>
+                <text x="15" y="24" fill="#34d399" font-size="8" font-weight="bold">Emerald Fairway (Safe)</text>
+                <ellipse cx="130" cy="62" rx="26" ry="14" fill="#991b1b" stroke="#ef4444" stroke-width="2"/>
+                <text x="110" y="65" fill="#ffffff" font-size="8" font-weight="bold">Fasht Reef</text>
+                <path d="M 45,88 L 45,58 Q 45,40 80,36" fill="none" stroke="#f59e0b" stroke-width="2.5"/>
+                <polygon points="80,36 70,31 72,41" fill="#f59e0b"/>
+                <text x="15" y="82" fill="#f59e0b" font-size="8">Evasive Turn</text>
+              </svg>
+              <div class="diagram-caption">FIG 3.2: Reef Avoidance</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 4: DIGITAL DIVISION -->
+    <div class="page">
+      <div>
+        <div class="page-header">
+          <h1>📡 Digital Division Field Manual</h1>
+          <span class="badge">STEM UP NAV STATION</span>
+        </div>
+
+        <div class="role-box">
+          <h2>👋 Welcome Team! Who You Are: Tech & Sonar Officers</h2>
+          <p style="margin:0;">
+            You operate modern electronic equipment—GPS satellite fixes, depth sounders, and radar. While traditional teams watch nature, your digital numbers give exact, life-saving depth and position readings.
+          </p>
+        </div>
+
+        <div class="instruction-box">
+          <b>📋 HOW TO PLAY YOUR TURN:</b><br>
+          1. Read the shift observation on your station screen.<br>
+          2. Match your observation with the 2 visual guides below.<br>
+          3. Discuss with your team and select your helm decision on the Console tablet!
+        </div>
+
+        <div class="grid-2col">
+          <div class="rule-card">
+            <div>
+              <h3>1. GPS Waypoint Tracking</h3>
+              <p>• Departure Fix: <b>29.20° N</b></p>
+              <p>• Target Port Fix (Al Wakrah): <b>25.17° N</b></p>
+              <p>• <b>STEERING RULE:</b> As long as GPS latitude reads above 25.17° N, hold your speed on a <b>SOUTH</b> track.</p>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 200 120">
+                <rect width="200" height="120" fill="#030a16" rx="6"/>
+                <line x1="20" y1="18" x2="180" y2="18" stroke="#1e293b"/>
+                <line x1="20" y1="55" x2="180" y2="55" stroke="#1e293b"/>
+                <line x1="20" y1="92" x2="180" y2="92" stroke="#1e293b"/>
+                <text x="25" y="14" fill="#94a3b8" font-size="8">29.20° N (Departure)</text>
+                <text x="25" y="51" fill="#38bdf8" font-size="8">27.00° N (Mid-Gulf)</text>
+                <text x="25" y="88" fill="#34d399" font-size="8">25.17° N (Target Port)</text>
+                <circle cx="130" cy="18" r="4" fill="#f59e0b"/>
+                <line x1="130" y1="18" x2="130" y2="82" stroke="#34d399" stroke-width="2" stroke-dasharray="4,2"/>
+                <polygon points="130,87 125,77 135,77" fill="#34d399"/>
+              </svg>
+              <div class="diagram-caption">FIG 4.1: GPS Latitude Progress</div>
+            </div>
+          </div>
+
+          <div class="rule-card">
+            <div>
+              <h3>2. Bathymetric Sonar Profile</h3>
+              <p>• <b>Safe Cruising Depth:</b> 12 to 20 meters.</p>
+              <p>• <b>Rapid Shoaling Alert:</b> Depth drops from 12m to 4m.</p>
+              <p>• <b>STEERING RULE:</b> Execute an emergency turn if depth drops below <b>5 meters</b>.</p>
+            </div>
+            <div class="diagram-box">
+              <svg viewBox="0 0 200 120">
+                <rect width="200" height="120" fill="#030a16" rx="6"/>
+                <line x1="10" y1="18" x2="190" y2="18" stroke="#38bdf8" stroke-width="2"/>
+                <text x="15" y="14" fill="#38bdf8" font-size="8">Sea Surface (0m)</text>
+                <path d="M 10,92 L 90,92 L 130,30 L 190,30" fill="none" stroke="#ef4444" stroke-width="2"/>
+                <text x="25" y="82" fill="#34d399" font-size="8">Safe Depth (18m)</text>
+                <text x="120" y="26" fill="#ef4444" font-size="8" font-weight="bold">SHOAL (3m)</text>
+                <line x1="70" y1="18" x2="70" y2="92" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="2,2"/>
+              </svg>
+              <div class="diagram-caption">FIG 4.2: Sonar Echo Profile</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>
