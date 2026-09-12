@@ -22,7 +22,9 @@ An interactive, real-time STEM educational simulation designed for museum worksh
 
 ## 🚀 Quick Start
 
+
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/herfiuh/lost-at-sea-simulation.git](https://github.com/herfiuh/lost-at-sea-simulation.git)
-   cd lost-at-sea-simulation
+   git clone [https://github.com/herfiuh/lost-at-sea.git](https://github.com/herfiuh/lost-at-sea.git)
+   cd lost-at-sea
+   
