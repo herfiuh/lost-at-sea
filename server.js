@@ -54,12 +54,22 @@ function checkAutoAdvance(shift) {
         const totalScore = gameState.shiftScores[1] + gameState.shiftScores[2] + gameState.shiftScores[3];
         if (totalScore >= 10) {
           gameState.finalOutcome = 'success'; // Safe Arrival
-        } else if (gameState.submissions[3].T.choice.startsWith('1.') && gameState.submissions[3].D.choice.startsWith('1.')) {
-          gameState.finalOutcome = 'drifted'; // Missed Port / Stranded near Halul Island
         } else {
-          gameState.finalOutcome = 'grounded'; // Ran aground on Fasht Reefs
-        }
-      }
+          const tEntry = gameState.submissions[3]?.T;
+          const dEntry = gameState.submissions[3]?.D;
+
+          if (
+            tEntry &&
+            dEntry &&
+            tEntry.choice.startsWith('1.') &&
+            dEntry.choice.startsWith('1.')
+         ) {
+           gameState.finalOutcome = 'drifted'; // Missed Port / Stranded near Halul Island
+         } else {
+           gameState.finalOutcome = 'grounded'; // Ran aground on Fasht Reefs
+       }
+     }
+    }
       io.emit('stateUpdate', gameState);
     }, 2000);
   }
